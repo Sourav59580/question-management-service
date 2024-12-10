@@ -12,3 +12,16 @@ const app = express();
 app.use(express.json({ limit: "50mb", extended: true }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
+
+// mongoDB connection
+require('./infrastructure/database/mongodb-connection');
+
+app.use(function (req, res, next) {
+  res.status(404).json({ error: 'Unable to find the requested resource!' });
+});
+
+app.listen(global.port, () => {
+  console.log(`Server is listening on port ${global.port}`);
+});
+
+module.exports = app;
