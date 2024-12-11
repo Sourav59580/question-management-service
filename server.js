@@ -15,6 +15,7 @@ app.use(cors());
 
 // mongoDB connection
 require('./infrastructure/database/mongodb-connection');
+app.use('/', require('./features/routes'));
 
 app.use(function (req, res, next) {
   res.status(404).json({ error: 'Unable to find the requested resource!' });
