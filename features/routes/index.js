@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-router.use('/', require('./users/users.routes'));
+router.use('/users', require('./users/users.routes'));
 
 
 router.get('/', (req, res) => {

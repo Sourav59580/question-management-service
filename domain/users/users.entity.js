@@ -47,7 +47,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (subjects) {
-          return subjects.every(subject => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(subject));
+          return subjects.every((subject) =>
+            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+              subject
+            )
+          );
         },
         message: (props) => `${props.value} contains an invalid UUID!`,
       },
@@ -55,12 +59,34 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
     },
+    password_updated_at: {
+      type: Date,
+      default: null,
+    },
     deleted_at: {
       type: Date,
       default: null,
     },
   },
-  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
+  {
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+    toJSON: {
+      transform: function (doc, ret) {
+        delete ret._id;
+        delete ret.__v;
+        delete ret.password;
+        delete ret.deleted_at;
+      },
+    },
+    toObject: {
+      transform: function (doc, ret) {
+        delete ret._id;
+        delete ret.__v;
+        delete ret.password;
+        delete ret.deleted_at;
+      },
+    },
+  }
 );
 
 const User = mongoose.model("Users", userSchema);

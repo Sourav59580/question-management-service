@@ -17,3 +17,16 @@ exports.createUser = async (req, res) => {
     res.status(500).json("Internal server error");
   }
 };
+
+exports.loginUser = async (req, res) => {
+  try {
+    const user = await usersService.loginUser(req.body);
+    if (!user) {
+      return res.status(400).json("Invalid user data");
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error in user controller", error);
+    res.status(500).json("Internal server error");
+  }
+}

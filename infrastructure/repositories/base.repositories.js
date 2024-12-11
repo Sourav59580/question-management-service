@@ -8,7 +8,7 @@ class BaseRepository {
        * @param {object} payload - The data object representing the record to be created.
        * @returns {Promise} - A promise that resolves with the created record.
        */
-    create(payload) {
+    create(payload, options = {}) {
         return this.model(payload).save();
     }
 
@@ -52,9 +52,9 @@ class BaseRepository {
        * @param {object} options - Additional options for the findById operation.
        * @returns {Promise} - A promise that resolves with the found record.
        */
-    find_by_id(id, projection = {}, options = {}) {
+    find_by_id(creteria, projection = {}, options = {}) {
         options.lean = true;
-        return this.model.findById(id, projection, options);
+        return this.model.findOne(creteria, projection, options);
     }
 
     /**
