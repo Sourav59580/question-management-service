@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const USERROLES = require("./enums/user-roles.enums");
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     uuid: {
       type: String,
@@ -43,18 +44,8 @@ const userSchema = new mongoose.Schema(
       enum: Object.values(USERROLES),
     },
     subjects_id: {
-      type: [String],
+      type: [{ type: Schema.Types.ObjectId, ref: "Subject" }],
       required: true,
-      validate: {
-        validator: function (subjects) {
-          return subjects.every((subject) =>
-            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-              subject
-            )
-          );
-        },
-        message: (props) => `${props.value} contains an invalid UUID!`,
-      },
     },
     password: {
       type: String,
@@ -75,6 +66,7 @@ const userSchema = new mongoose.Schema(
         delete ret._id;
         delete ret.__v;
         delete ret.password;
+        delete ret.password_updated_at;
         delete ret.deleted_at;
       },
     },
@@ -83,12 +75,13 @@ const userSchema = new mongoose.Schema(
         delete ret._id;
         delete ret.__v;
         delete ret.password;
+        delete ret.password_updated_at;
         delete ret.deleted_at;
       },
     },
   }
 );
 
-const User = mongoose.model("Users", userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
