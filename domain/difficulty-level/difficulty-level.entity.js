@@ -19,6 +19,6 @@ const difficultyLevelSchema = new mongoose.Schema(
     }
 );
 
-const Difficultylevel = mongoose.model('Difficultylevel', difficultyLevelSchema);
+const Difficultylevel = mongoose.model('DifficultyLevel', difficultyLevelSchema);
 
 module.exports = Difficultylevel;

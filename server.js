@@ -16,8 +16,17 @@ app.use(cors());
 // mongoDB connection
 require('./infrastructure/database/mongodb-connection');
 
+app.use("/api/v1", require("./features"));
 app.use(function (req, res, next) {
   res.status(404).json({ error: 'Unable to find the requested resource!' });
+});
+
+process.on("uncaughtException", function (err) {
+  console.error("Uncaught exception:", err);
+});
+
+process.on("unhandledRejection", (reason, p) => {
+  console.error("Unhandled rejection at:", p, "reason:", reason);
 });
 
 app.listen(global.port, () => {
