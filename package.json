@@ -4,12 +4,14 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js 8080",
+    "start": "nodemon server.js 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vonage/server-sdk": "^3.19.2",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "connect-redis": "^8.0.1",
     "cors": "^2.8.5",
@@ -18,8 +20,10 @@
     "express-session": "^1.18.1",
     "ioredis": "^5.4.1",
     "mongoose": "^8.8.4",
+    "nodemailer": "^6.9.16",
     "nodemon": "^3.1.7",
     "socket.io": "^4.8.1",
+    "twilio": "^5.4.0",
     "uuid": "^11.0.3"
   }
 }
