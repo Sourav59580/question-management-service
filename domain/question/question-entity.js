@@ -11,7 +11,6 @@ const optionSchema = new Schema(
     { _id: false }
 );
 
-
 const questionSchema = new Schema(
     {
         QID: {

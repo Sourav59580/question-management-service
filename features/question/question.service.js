@@ -1,12 +1,21 @@
 const questionRepository = require('../../infrastructure/repositories/question/question.repository');
-
+const questionLogRepository = require('../../infrastructure/repositories/question-log/qustion-log')
 class QuestionService {
     async createQuestion(payload) {
         const QID = await questionRepository.getOrCreateQID();
-        return questionRepository.create({
+        const createdQuestion = await questionRepository.create({
             ...payload,
             QID,
         });
+
+        await questionLogRepository.create({
+            questionId: createdQuestion._id,
+            action: 'created',
+            details: `Question created with QID: ${createdQuestion.QID}`,
+            user: payload.createdBy,
+        });
+
+        return createdQuestion;
     }
 
     async getFilteredQuestions(queryParams, projection, options) {
@@ -32,11 +41,29 @@ class QuestionService {
     }
 
     async updateQuestion(id, payload) {
-        return questionRepository.update({ _id: id }, payload);
+        const updatedQuestion = questionRepository.update({ _id: id }, payload);
+
+        await questionLogRepository.create({
+            questionId: id,
+            action: 'updated',
+            details: `Question updated with payload: ${JSON.stringify(payload)}`,
+            user: payload.updatedBy,
+        });
+
+        return updatedQuestion;
     }
 
     async deleteQuestion(id) {
-        return questionRepository.delete({ _id: id });
+        const deletedQuestion = questionRepository.delete({ _id: id });
+
+        await questionLogRepository.create({
+            questionId: id,
+            action: 'deleted',
+            details: `Question with ID ${id} was deleted.`,
+            user: deletedBy,
+        });
+
+        return deletedQuestion;
     }
 }
 

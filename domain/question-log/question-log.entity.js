@@ -10,7 +10,7 @@ const questionLogSchema = new Schema(
         },
         action: {
             type: String,
-            enum: ['created', 'updated', 'deleted'],
+            enum: ['created', 'updated', 'deleted', 'reviewed', 'statusChanged'],
             required: true,
         },
         details: {
