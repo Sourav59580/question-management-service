@@ -1,18 +1,21 @@
 const VerificationToken = require("../../../domain/verification-token/verification-token.entity");
 const BaseRepository = require("../base.repositories");
 
-class UsersRepository extends BaseRepository {
+class VerficationToken extends BaseRepository {
   constructor() {
     super({ model: VerificationToken });
   }
 
-  async createUser(payload) {
-    return this.create(payload);
+  async createToken(payload) {
+    const creteria = {
+      user_id: { $eq: payload.user_id },
+    }; 
+    return this.update(creteria, payload, { upsert: true });
   }
 
   async findTokenByUserID(id, projection = {}, options = {}) {
-    return this.findOne({$where: {user_id: id}}, projection, options);
+    return this.findOne({ user_id: id }, projection, options);
   }
 }
 
-module.exports = new UsersRepository();
+module.exports = new VerficationToken();

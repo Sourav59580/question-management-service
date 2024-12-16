@@ -1,4 +1,4 @@
-const authenticationServices = require("./authentication.services");
+const authenticationServices = require("./otp-auth.services");
 
 class AuthenticationController {
   async sendOTP(req, res) {
@@ -9,7 +9,7 @@ class AuthenticationController {
       if (!otp) {
         return res.status(400).json("OTP not sent");
       }
-      res.status(200).json(otp);
+      res.status(200).json({ message: "OTP sent successfully"});
     } catch (error) {
       console.error("Error in authentication controller", error);
       res.status(500).json("Internal server error");
@@ -22,7 +22,7 @@ class AuthenticationController {
       if (!otp) {
         return res.status(400).json("Invalid OTP");
       }
-      res.status(200).json(otp);
+      res.status(200).json({ message: "OTP verified successfully"});
     } catch (error) {
       console.error("Error in authentication controller", error);
       res.status(500).json("Internal server error");

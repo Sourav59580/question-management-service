@@ -14,6 +14,13 @@ class UsersRepository extends BaseRepository {
     return User.findOne({ email }, projection, options);
   }
 
+  async findUserById(id, projection = {}, options = {}) {
+    const creteria = {
+      _id: { $eq: id },
+    };
+    return User.findOne(creteria, projection, options);
+  }
+
   async updateUser(id, payload, options = {}) {
     const criteria = {
       _id: { $eq: id },
