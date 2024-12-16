@@ -9,7 +9,8 @@ class BaseRepository {
        * @returns {Promise} - A promise that resolves with the created record.
        */
     create(payload, options = {}) {
-        return this.model(payload).save();
+        const instance = new this.model(payload);
+        return instance.save();
     }
 
     /**

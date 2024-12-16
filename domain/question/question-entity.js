@@ -6,17 +6,11 @@ const { Schema } = mongoose;
 const optionSchema = new Schema(
     {
         option: { type: String, required: true },
-        isCorrect: { type: Boolean, default: false },
+        isCorrect: { type: Boolean, required: true },
     },
     { _id: false }
 );
 
-const generateQID = async () => {
-    const lastQID = await Question.findOne().sort({ QID: -1 }).limit(1);
-    return lastQID
-        ? (parseInt(lastQID.QID) + 1).toString().padStart(15, '0')
-        : '000000000000001';
-};
 
 const questionSchema = new Schema(
     {
@@ -24,7 +18,6 @@ const questionSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            default: generateQID,
         },
         type: {
             type: String,
@@ -91,28 +84,15 @@ const questionSchema = new Schema(
         questionTitle: {
             type: Map,
             of: String,
-            set: (v) => encryptData(JSON.stringify(v)),
-            get: (v) => JSON.parse(decryptData(v)),
         },
         description: {
             type: Map,
             of: String,
-            set: (v) => encryptData(JSON.stringify(v)),
-            get: (v) => JSON.parse(decryptData(v)),
         },
         options: {
             type: Map,
             of: [optionSchema],
-            required: true,
-            set: (v) => encryptData(JSON.stringify(v)),
-            get: (v) => JSON.parse(decryptData(v)),
-        },
-        correctAnswers: {
-            type: Map,
-            of: [String],
-            required: true,
-            set: (v) => encryptData(JSON.stringify(v)),
-            get: (v) => JSON.parse(decryptData(v)),
+            required: true
         },
         reviewer: [{
             user: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -126,12 +106,11 @@ const questionSchema = new Schema(
         }],
         tags: {
             type: [String],
-            required: true,
+            required: false,
         },
         slug: {
             type: String,
-            required: true,
-            unique: true,
+            required: false,
         },
     },
     {
@@ -141,8 +120,8 @@ const questionSchema = new Schema(
     }
 );
 
-questionSchema.pre('save', function (next) {
-    this.slug = this.tags.join('-');
+questionSchema.pre('save', async function (next) {
+    this.slug = this.tags.length > 0 ? this.tags.join('-') : 'untagged';
     next();
 });
 
