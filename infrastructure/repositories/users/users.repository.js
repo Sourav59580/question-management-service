@@ -7,18 +7,22 @@ class UsersRepository extends BaseRepository {
   }
 
   async createUser(payload, options) {
-    return this.create(payload);
+    return this.model.create(payload);
+  }
+
+  async findAllUsers(projection = {}, options = {}) {
+    return this.model.find({}, projection, options);
   }
 
   async findUserByEmail(email, projection = {}, options = {}) {
-    return User.findOne({ email }, projection, options);
+    return this.model.findOne({ email }, projection, options);
   }
 
   async findUserById(id, projection = {}, options = {}) {
     const creteria = {
       _id: { $eq: id },
     };
-    return User.findOne(creteria, projection, options);
+    return this.model.findOne(creteria, projection, options);
   }
 
   async updateUser(id, payload, options = {}) {
@@ -26,6 +30,13 @@ class UsersRepository extends BaseRepository {
       _id: { $eq: id },
     };
     return this.update(criteria, payload, options);
+  }
+
+  async deleteUser(id, options = {}) {
+    const criteria = {
+      _id: id,
+    };
+    return this.delete(criteria, options);
   }
 }
 

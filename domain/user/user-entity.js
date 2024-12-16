@@ -83,13 +83,19 @@ const userSchema = new Schema(
 
 userSchema.pre("save", async function (next) {
   try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    if (this.isModified("password") || this.isNew) {
+      this.password = await this.encryptPassword(this.password);
+    }
     next();
   } catch (error) {
     next(error);
   }
 });
+
+userSchema.methods.encryptPassword = async function (password) {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
+};
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
