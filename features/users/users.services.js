@@ -170,7 +170,9 @@ class UserService {
       if (!user_id) {
         throw new Error("User ID is required");
       }
-      const user = await usersRepository.deleteUser(user_id);
+      const user = await usersRepository.deleteUser({
+        _id: user_id,
+      });
       if (!user) {
         throw new Error("User not found");
       }
