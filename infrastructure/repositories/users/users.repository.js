@@ -15,7 +15,7 @@ class UsersRepository extends BaseRepository {
   }
 
   async findUserByEmail(email, projection = {}, options = {}) {
-    return this.findOne({ email }, projection, options);
+    return this.model.findOne({ email }, projection, options);
   }
 
   async findUserById(id, projection = {}, options = {}) {

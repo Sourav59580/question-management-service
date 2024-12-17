@@ -2,13 +2,11 @@ const mongoose = require("mongoose");
 const usersRepository = require("../../infrastructure/repositories/users/users.repository");
 const verificationTokenRepository = require("../../infrastructure/repositories/verification-token/verification-token.repository");
 const { generateOTP, sendOTP } = require("../../infrastructure/utils/send-otp");
-const {
-  generatePassword,
-} = require("../../infrastructure/utils/generate-password");
+const jwt = require("jsonwebtoken");
 const { sendMail } = require("../../infrastructure/mailer/user-created-mail");
 
 class AuthenticationService {
-  async loginUser(payload) {
+  async loginUser(payload, res) {
     const { email = "", password = "" } = payload;
     try {
       if (!email || !password) {
@@ -111,7 +109,11 @@ class AuthenticationService {
       if (!verificationToken || verificationToken.otp !== otp) {
         return { message: "Invalid OTP" };
       }
-      return verificationToken;
+
+      const user = await usersRepository.findUserById(userId);
+      const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
+      
+      return token;
     } catch (error) {
       console.error("Error in verifying OTP", error);
       throw new Error("Invalid OTP");

@@ -31,11 +31,11 @@ class AuthenticationController {
 
   async verifyOTP(req, res) {
     try {
-      const otp = await authenticationServices.verifyOTP(req.body);
-      if (!otp) {
+      const token = await authenticationServices.verifyOTP(req.body);
+      if (!token) {
         return res.status(400).json("Invalid OTP");
       }
-      res.status(200).json({ message: "OTP verified successfully" });
+      res.status(200).json({ message: "OTP verified successfully", token });
     } catch (error) {
       console.error("Error in authentication controller", error);
       res.status(500).json({ error: error.message });

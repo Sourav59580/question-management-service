@@ -1,8 +1,14 @@
+const USERROLES = require("../../domain/user/enums/user-role.enum");
+const authenticationMiddleware = require("../authentication/authentication.middleware");
 const usersController = require("./users.controller");
 
 const router = require("express").Router();
 
-router.post("/register", usersController.createUser);
+router.post(
+  "/register",
+    authenticationMiddleware.verifyUserRole([USERROLES.MASTER_USER]),
+  usersController.createUser
+);
 router.get("/", usersController.listAllUsers);
 router.get("/:user_id", usersController.getUserById);
 router.put("/:user_id", usersController.updateUser);
