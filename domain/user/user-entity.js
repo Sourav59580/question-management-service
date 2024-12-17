@@ -59,7 +59,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    password_updated_at: {
+    passwordUpdatedAt: {
       type: Date,
       default: null,
     },

@@ -8,55 +8,6 @@ const {
 const { sendMail } = require("../../infrastructure/mailer/user-created-mail");
 
 class AuthenticationService {
-  async createUser(payload) {
-    const {
-      fullName = "",
-      email = "",
-      mobileNumber = "",
-      role = "",
-      assignedSubjects = [],
-    } = payload;
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
-      if (
-        !fullName ||
-        !email ||
-        !mobileNumber ||
-        !role ||
-        !assignedSubjects.length
-      ) {
-        throw new Error("All fields are required");
-      }
-
-      const userPayload = {
-        fullName,
-        email,
-        mobileNumber,
-        role,
-        assignedSubjects,
-        password: generatePassword(),
-      };
-
-      const user = await usersRepository.createUser(userPayload, { session });
-      if (!user) {
-        throw new Error("Failed to create user");
-      }
-
-      await sendMail(user.email, userPayload.password);
-
-      await session.commitTransaction();
-      return user;
-    } catch (error) {
-      await session.abortTransaction();
-      console.error("An error occurred: ", error);
-      throw new Error("Internal server error");
-    } finally {
-      session.endSession();
-    }
-  }
-
   async loginUser(payload) {
     const { email = "", password = "" } = payload;
     try {
@@ -74,7 +25,7 @@ class AuthenticationService {
         throw new Error("Invalid password");
       }
 
-      if (user.password_updated_at === null) {
+      if (user.passwordUpdatedAt === null) {
         const verificationToken = await this.sendOTP(user._id);
         if (verificationToken) {
           return {
@@ -86,10 +37,7 @@ class AuthenticationService {
 
       const twoMonthsAgo = new Date();
       twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
-      if (
-        user.password_updated_at &&
-        user.password_updated_at <= twoMonthsAgo
-      ) {
+      if (user.passwordUpdatedAt && user.passwordUpdatedAt <= twoMonthsAgo) {
         return {
           message: "Your password has been expired. Please set a new password",
           route: "/reset-password",
