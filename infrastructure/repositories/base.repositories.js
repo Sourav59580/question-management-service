@@ -77,7 +77,7 @@ class BaseRepository {
        * @returns {Promise} - A promise that resolves with the result of the delete operation.
        */
     delete(query = {}) {
-        return this.model.delete(query);
+        return this.model.deleteOne(query);
     }
 }
 

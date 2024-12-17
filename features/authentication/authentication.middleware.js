@@ -4,12 +4,15 @@ class AuthMiddleware {
   verifyUserRole(allowedRoles = []) {
     return async (req, res, next) => {
       try {
-          const token = req.headers.authorization;
-          console.log("headers", req.token);
-          const user = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("decoded", user);
-        if (allowedRoles.length && !allowedRoles.includes(user.role)) {
-          return res.status(400).json({ message: "Unauthorized" });
+        if (!req.session || !req.session.user) {
+          return res
+            .status(401)
+            .json({ message: "Unauthorized. Please log in." });
+        }
+        if (req.session.user.role !== "master_user") {
+          return res
+            .status(403)
+            .json({ message: "Access denied. Only master users are allowed." });
         }
         next();
       } catch (error) {

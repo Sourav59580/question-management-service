@@ -23,10 +23,10 @@ class UserService {
       throw new Error("Failed to create user");
     }
 
-    const mail = await sendMail(user.email, userPayload.password);
-    if (!mail) {
-      throw new Error("Failed to send mail");
-    }
+    // const mail = await sendMail(user.email, userPayload.password);
+    // if (!mail) {
+    //   throw new Error("Failed to send mail");
+    // }
 
     return user;
   }

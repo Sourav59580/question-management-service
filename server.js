@@ -8,17 +8,36 @@ if (!global.port) {
 
 const express = require("express");
 const cors = require("cors");
+const session = require("express-session");
+const { RedisStore } = require("connect-redis");
+
+const { createClient } = require("redis");
+
 const app = express();
+
+const redisClient = createClient();
+redisClient.connect().catch(console.error);
+
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient, prefix: "session:" }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, httpOnly: true, maxAge: 3600000 }, // 1-hour session
+  })
+);
+
 app.use(express.json({ limit: "50mb", extended: true }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
 
 // mongoDB connection
-require('./infrastructure/database/mongodb-connection');
+require("./infrastructure/database/mongodb-connection");
 
 app.use("/api/v1", require("./features"));
 app.use(function (req, res, next) {
-  res.status(404).json({ error: 'Unable to find the requested resource!' });
+  res.status(404).json({ error: "Unable to find the requested resource!" });
 });
 
 process.on("uncaughtException", function (err) {
