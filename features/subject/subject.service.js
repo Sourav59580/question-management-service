@@ -21,7 +21,7 @@ class SubjectService {
     }
 
     async getSubjectById(id) {
-        return subjectRepository.findById({ _id: id }, null, { populate: 'createdBy' });
+        return subjectRepository.findById({ _id: id });
     }
 
     async updateSubject(id, payload) {
