@@ -1,5 +1,3 @@
-const jwt = require("jsonwebtoken");
-
 class AuthMiddleware {
   verifyUserRole(allowedRoles = []) {
     return async (req, res, next) => {
