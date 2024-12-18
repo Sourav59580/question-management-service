@@ -32,7 +32,28 @@ class UserService {
   }
 
   async listAllUsers(queryParams) {
-    return usersRepository.findAllUsers();
+    const { page = 1, limit = 10, fullName, email, mobileNumber, role, sortBy = "createdAt", sortOrder = "asc", ...filters } = queryParams;
+
+    const query = { ...filters };
+    if (fullName) query.fullName = { $regex: fullName, $options: "i" };
+    if (email) query.email = { $regex: email, $options: "i" };
+    if (mobileNumber)
+      query.mobileNumber = { $regex: mobileNumber, $options: "i" };
+    if (role) query.role = role;
+
+    const skip = (page - 1) * limit;
+    const sortOptions = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
+    const projection = { __v: 0, password: 0 };
+    const users = await usersRepository.find(query, projection, {
+      skip,
+      limit: parseInt(limit),
+      sort: sortOptions,
+      populate: "assignedSubjects",
+      lean: true,
+    });
+    const total = await usersRepository.count();
+
+    return { total, count: users.length, page: parseInt(page), limit: parseInt(limit), users };
   }
 
   async getUserById(userId) {
@@ -48,7 +69,6 @@ class UserService {
       throw new Error("User ID is required");
     }
     const user = await usersRepository.updateUser(userId, value);
-    
     return user;
   }
 

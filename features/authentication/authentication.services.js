@@ -50,6 +50,14 @@ class AuthenticationService {
     }
   }
 
+  async logoutUser(req) {
+    if (!req.session.user) {
+      throw new Error("User not found");
+    }
+    req.session.destroy();
+    return { message: "User logged out successfully" };
+  }
+
   async sendOTP(userId) {
     const user = await usersRepository.findUserById(userId);
     if (!user) {

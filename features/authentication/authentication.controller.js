@@ -14,6 +14,19 @@ class AuthenticationController {
     }
   }
 
+  async logoutUser(req, res) {
+    try {
+      const user = await authenticationServices.logoutUser(req);
+      if (!user) {
+        return res.status(400).json("Invalid user data");
+      }
+      res.status(200).json({ message: "User logged out successfully" });
+    } catch (error) {
+      console.error("Error in user controller", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+
   async sendOTP(req, res) {
     const { userId } = req.params;
     try {
