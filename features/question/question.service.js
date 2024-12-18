@@ -1,6 +1,6 @@
 const questionRepository = require('../../infrastructure/repositories/question/question.repository');
-const questionLogRepository = require('../../infrastructure/repositories/question-log/qustion-log.repository');
-const { encryptData, encryptOptions, encryptMcqOptions, encryptComprehensionOptions, decryptData, decryptMcqOptions, decryptComprehensionOptions } = require('../../domain/question/encrypt-decrypt');
+const questionLogService = require('../question-log/question-log.service');
+const { encryptData, encryptMcqOptions, encryptComprehensionOptions, decryptData, decryptMcqOptions, decryptComprehensionOptions } = require('../../domain/question/encrypt-decrypt');
 const CHUNK_SIZE = 100;
 
 class QuestionService {
@@ -19,12 +19,12 @@ class QuestionService {
             QID,
         });
 
-        await questionLogRepository.create({
+        await questionLogService.createQuestionLog({
             questionId: createdQuestion._id,
             action: 'created',
             details: `Question created with QID: ${createdQuestion.QID}`,
             user: payload.createdBy,
-        });
+        })
 
         return createdQuestion;
     }
@@ -67,7 +67,7 @@ class QuestionService {
                         });
 
                         // Log the creation
-                        await questionLogRepository.create({
+                        await questionLogService.createQuestionLog({
                             questionId: createdQuestion._id,
                             action: 'created',
                             details: `Bulk uploaded question with QID: ${createdQuestion.QID}`,
@@ -149,13 +149,13 @@ class QuestionService {
             },
         });
 
-        await questionLogRepository.create({
+        await questionLogService.createQuestionLog({
             questionId: id,
             action: 'updated',
             details: `Question updated with payload: ${JSON.stringify(payload)}`,
             user: payload.updatedBy,
-        });
-
+        })
+        
         return updatedQuestion;
     }
 
@@ -183,12 +183,12 @@ class QuestionService {
         const updatedQuestion = await question.save();
 
         // Log the review action
-        await questionLogRepository.create({
+        await questionLogService.createQuestionLog({
             questionId,
             action: 'reviewed',
             details: `Review added/updated by user: ${user}, comment: ${comment}`,
             user,
-        });
+        })
 
         return updatedQuestion;
     }
@@ -196,18 +196,17 @@ class QuestionService {
     async deleteQuestion(id) {
         const deletedQuestion = questionRepository.delete({ _id: id });
 
-        await questionLogRepository.create({
+        await questionLogService.createQuestionLog({
             questionId: id,
             action: 'deleted',
             details: `Question with ID ${id} was deleted.`,
             user: deletedBy,
-        });
-
+        })
         return deletedQuestion;
     }
 
     async getQuestionLogs(questionId) {
-        const logs = await questionLogRepository.find({ questionId });
+        const logs = await questionLogService.getQuestionLogs(questionId)
         if (!logs) {
             throw new Error('No logs found for the given question.');
         }
