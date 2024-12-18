@@ -106,7 +106,6 @@ class QuestionService {
         const decryptedQuestions = questions.map((question) => ({
             ...question.toObject(),
             question: Array.from(question.question.entries()).reduce((acc, [lang, encryptedText]) => { 
-                console.log('lang: ', lang, encryptedText);
                 acc[lang] = decryptData(encryptedText);  
                 return acc;
             }, {}),

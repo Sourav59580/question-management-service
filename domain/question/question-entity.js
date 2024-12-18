@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const QuestionStatus = require('./enums/question-status.enum');
-const { decryptData, encryptData } = require('./encrypt-decrypt');
 const { Schema } = mongoose;
 
 const optionSchema = new Schema(
