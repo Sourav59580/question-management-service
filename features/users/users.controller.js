@@ -23,7 +23,7 @@ class UserController {
 
   async getUserById(req, res) {
     try {
-      const user = await userService.getUserById(req.params.user_id);
+      const user = await userService.getUserById(req.params.userId);
       if (!user) return res.status(400).json("User not found");
       return res.status(200).json(user);
     } catch (error) {
@@ -34,7 +34,7 @@ class UserController {
 
   async updateUser(req, res) {
     try {
-      const user = await userService.updateUser(req.params.user_id, req.body);
+      const user = await userService.updateUser(req.params.userId, req.body);
       if (!user) return res.status(400).json("User not found");
       return res.status(200).json({ message: "User updated successfully" });
     } catch (error) {
@@ -45,7 +45,7 @@ class UserController {
 
   async deleteUser(req, res) {
     try {
-      const user = await userService.deleteUser(req.params.user_id);
+      const user = await userService.deleteUser(req.params.userId);
       if (!user) return res.status(400).json("User not found");
       return res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
@@ -57,7 +57,7 @@ class UserController {
   async setNewPassword(req, res) {
     try {
       const user = await userService.setNewPassword(
-        req.params.user_id,
+        req.params.userId,
         req.body
       );
       if (!user) throw new Error("Failed to update password");
@@ -71,7 +71,7 @@ class UserController {
   async resetUserPassword(req, res) {
     try {
       const user = await userService.resetUserPassword(
-        req.params.user_id,
+        req.params.userId,
         req.body
       );
       if (!user) throw new Error("Failed to update password");
@@ -85,7 +85,7 @@ class UserController {
   async forgotPassword(req, res) {
     try {
       const verificationToken = await userService.forgotPassword(
-        req.params.user_id
+        req.params.userId
       );
       if (!verificationToken) {
         return res.status(400).json({ message: "Failed to send OTP" });

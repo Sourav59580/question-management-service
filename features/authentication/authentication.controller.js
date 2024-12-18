@@ -15,9 +15,9 @@ class AuthenticationController {
   }
 
   async sendOTP(req, res) {
-    const { user_id } = req.params;
+    const { userId } = req.params;
     try {
-      const otp = await authenticationServices.sendOTP(user_id);
+      const otp = await authenticationServices.sendOTP(userId);
       if (!otp) {
         return res.status(400).json("OTP not sent");
       }

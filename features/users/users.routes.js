@@ -10,11 +10,11 @@ router.post(
   usersController.createUser
 );
 router.get("/", usersController.listAllUsers);
-router.get("/:user_id", usersController.getUserById);
-router.put("/:user_id", usersController.updateUser);
-router.delete("/:user_id", usersController.deleteUser);
-router.patch("/:user_id/set-new-password", usersController.setNewPassword);
-router.patch("/:user_id/reset-password", usersController.resetUserPassword);
-router.patch("/:user_id/forgot-password", usersController.forgotPassword);
+router.get("/:userId", usersController.getUserById);
+router.put("/:userId", usersController.updateUser);
+router.delete("/:userId", usersController.deleteUser);
+router.patch("/:userId/set-new-password", usersController.setNewPassword);
+router.patch("/:userId/reset-password", usersController.resetUserPassword);
+router.patch("/:userId/forgot-password", usersController.forgotPassword);
 
 module.exports = router;

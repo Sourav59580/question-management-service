@@ -23,10 +23,10 @@ class UserService {
       throw new Error("Failed to create user");
     }
 
-    // const mail = await sendMail(user.email, userPayload.password);
-    // if (!mail) {
-    //   throw new Error("Failed to send mail");
-    // }
+    const mail = await sendMail(user.email, userPayload.password);
+    if (!mail) {
+      throw new Error("Failed to send mail");
+    }
 
     return user;
   }
@@ -35,40 +35,40 @@ class UserService {
     return usersRepository.findAllUsers();
   }
 
-  async getUserById(user_id) {
-    return usersRepository.findUserById(user_id);
+  async getUserById(userId) {
+    return usersRepository.findUserById(userId);
   }
 
-  async updateUser(user_id, payload) {
+  async updateUser(userId, payload) {
     const { error, value } = userUpdateSchema.validate(payload);
     if (error) {
       throw new Error(`Validation error: ${error.details[0].message}`);
     }
-    if (!user_id) {
+    if (!userId) {
       throw new Error("User ID is required");
     }
-    const user = await usersRepository.updateUser(user_id, value);
+    const user = await usersRepository.updateUser(userId, value);
     
     return user;
   }
 
-  async deleteUser(user_id) {
-    return usersRepository.deleteUser({ _id: user_id });
+  async deleteUser(userId) {
+    return usersRepository.deleteUser({ _id: userId });
   }
 
-  async setNewPassword(user_id, payload) {
+  async setNewPassword(userId, payload) {
     const { password } = payload;
-    if (!user_id || !password) {
+    if (!userId || !password) {
       throw new Error("User ID and password are required");
     }
-    const user = await usersRepository.findUserById(user_id);
+    const user = await usersRepository.findUserById(userId);
     if (!user) {
       throw new Error("User not found");
     }
 
     const encryptedPassword = await user.encryptPassword(password);
 
-    const updatedUser = await usersRepository.updateUser(user_id, {
+    const updatedUser = await usersRepository.updateUser(userId, {
       password: encryptedPassword,
       passwordUpdatedAt: new Date(),
     });
@@ -76,12 +76,12 @@ class UserService {
     return updatedUser;
   }
 
-  async resetUserPassword(user_id, payload) {
+  async resetUserPassword(userId, payload) {
     const { oldPassword, password } = payload;
-    if (!user_id || !password || !oldPassword) {
+    if (!userId || !password || !oldPassword) {
       throw new Error("User ID and password are required");
     }
-    const user = await usersRepository.findUserById(user_id);
+    const user = await usersRepository.findUserById(userId);
     if (!user) {
       throw new Error("User not found");
     }
@@ -93,7 +93,7 @@ class UserService {
 
     const encryptedPassword = await user.encryptPassword(password);
 
-    const updatedUser = await usersRepository.updateUser(user_id, {
+    const updatedUser = await usersRepository.updateUser(userId, {
       password: encryptedPassword,
       passwordUpdatedAt: new Date(),
     });
@@ -101,11 +101,11 @@ class UserService {
     return updatedUser;
   }
 
-  async forgotPassword(user_id) {
-    if (!user_id) {
+  async forgotPassword(userId) {
+    if (!userId) {
       throw new Error("User ID is required");
     }
-    const verificationToken = await authenticationServices.sendOTP(user_id);
+    const verificationToken = await authenticationServices.sendOTP(userId);
     return verificationToken;
   }
 }

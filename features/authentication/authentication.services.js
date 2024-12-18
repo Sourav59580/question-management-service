@@ -67,7 +67,7 @@ class AuthenticationService {
     }
 
     const verificationToken = await verificationTokenRepository.createToken({
-      user_id: user._id,
+      userId: user._id,
       otp: otp,
     });
     if (!verificationToken) {

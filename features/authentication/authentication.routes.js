@@ -3,6 +3,6 @@ const authenticationController = require("./authentication.controller");
 
 router.post("/login", authenticationController.loginUser);
 router.post("/verify-otp", authenticationController.verifyOTP);
-router.get("/:user_id/send-otp", authenticationController.sendOTP);
+router.get("/:userId/send-otp", authenticationController.sendOTP);
 
 module.exports = router;
