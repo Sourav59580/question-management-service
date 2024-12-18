@@ -1,12 +1,36 @@
 const mongoose = require('mongoose');
-const { encryptData, decryptData } = require('./encrypt-decrypt');
 const QuestionStatus = require('./enums/question-status.enum');
+const { decryptData, encryptData } = require('./encrypt-decrypt');
 const { Schema } = mongoose;
 
 const optionSchema = new Schema(
     {
         option: { type: String, required: true },
         isCorrect: { type: Boolean, required: true },
+    },
+    { _id: false }
+);
+
+const comprehensionOptionSchema = new Schema(
+    {
+        question: { type: String, required: true },
+        options: [optionSchema],
+    },
+    { _id: false }
+);
+
+const optionsSchema = new Schema(
+    {
+        mcq: {
+            type: Map,
+            of: [optionSchema],
+            required: true,
+        },
+        comprehension: {
+            type: Map,
+            of: [comprehensionOptionSchema],
+            required: true,
+        },
     },
     { _id: false }
 );
@@ -80,17 +104,12 @@ const questionSchema = new Schema(
             type: String,
             select: false,
         },
-        questionTitle: {
-            type: Map,
-            of: String,
-        },
-        description: {
+        question: {
             type: Map,
             of: String,
         },
         options: {
-            type: Map,
-            of: [optionSchema],
+            type: optionsSchema,
             required: true
         },
         reviewer: [{
@@ -113,9 +132,7 @@ const questionSchema = new Schema(
         },
     },
     {
-        timestamps: true,
-        toJSON: { getters: true },
-        toObject: { getters: true },
+        timestamps: true
     }
 );
 
