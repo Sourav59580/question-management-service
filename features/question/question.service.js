@@ -1,5 +1,5 @@
 const questionRepository = require('../../infrastructure/repositories/question/question.repository');
-const questionLogRepository = require('../../infrastructure/repositories/question-log/qustion-log');
+const questionLogRepository = require('../../infrastructure/repositories/question-log/qustion-log.repository');
 const { encryptData, encryptOptions, encryptMcqOptions, encryptComprehensionOptions, decryptData, decryptMcqOptions, decryptComprehensionOptions } = require('../../domain/question/encrypt-decrypt');
 const CHUNK_SIZE = 100;
 
