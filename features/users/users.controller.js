@@ -91,7 +91,7 @@ class UserController {
         return res.status(400).json({ message: "Failed to send OTP" });
       }
       return res.status(200).json({
-        message: "OTP successfully sent to the registered mobile number.",
+        message: "OTP successfully sent to the registered email and mobile number.",
         route: "/set-new-password",
       });
     } catch (error) {

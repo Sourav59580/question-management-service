@@ -6,8 +6,9 @@ const vonage = new Vonage({
   apiSecret: process.env.VONAGE_API_SECRET,
 });
 
-const from = "Vonage APIs";
-const to = "918950523578";
+exports.generateFourDigitOTP = () =>{
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
 
 exports.generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000);
@@ -16,6 +17,8 @@ exports.sendOTP = async ({ to, from, otp }) => {
   const text = `Your OTP is ${otp}`;
   return vonage.sms.send({ to, from, text });
 };
+
+
 
 // exports.sendOTP = async (phone) => {
 //   try {

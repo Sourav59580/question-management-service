@@ -58,13 +58,13 @@ class AuthenticationService {
     return { message: "User logged out successfully" };
   }
 
-  async sendOTP(userId) {
+  async sendOTP(userId, token = null) {
     const user = await usersRepository.findUserById(userId);
     if (!user) {
       throw new Error("User not found");
     }
 
-    const otp = generateOTP();
+    const otp = token ? token : generateOTP();
     const message = await sendOTP({
       to: `91${user.mobileNumber}`,
       from: "QMS",

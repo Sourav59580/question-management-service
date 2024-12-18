@@ -23,6 +23,6 @@ router.delete(
 );
 router.patch("/:userId/set-new-password", usersController.setNewPassword);
 router.patch("/:userId/reset-password", usersController.resetUserPassword);
-router.patch("/:userId/forgot-password", usersController.forgotPassword);
+router.get("/:userId/forgot-password", usersController.forgotPassword);
 
 module.exports = router;

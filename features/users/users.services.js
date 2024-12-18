@@ -1,16 +1,19 @@
-const { sendMail } = require("../../infrastructure/mailer/user-created-mail");
 const {
   generatePassword,
 } = require("../../infrastructure/utils/generate-password");
 const usersRepository = require("../../infrastructure/repositories/users/users.repository");
 const authenticationServices = require("../authentication/authentication.services");
 const { userSchema, userUpdateSchema } = require("./user-validate.schema");
+const sendMailServices = require("../../infrastructure/mailer/send-mail.services");
+const { generateFourDigitOTP } = require("../../infrastructure/utils/send-otp");
 
 class UserService {
   async createUser(payload) {
-    const { error, value } = userSchema.validate(payload);
+    const { error, value } = userSchema.validate(payload, { abortEarly: false });
+    console.log(error)
     if (error) {
-      throw new Error(`Validation error: ${error.details[0].message}`);
+      const errorMessages = error.details.map(detail => detail.message).join(', ');
+      throw new Error(`Validation error: ${errorMessages}`);
     }
 
     const userPayload = {
@@ -23,7 +26,7 @@ class UserService {
       throw new Error("Failed to create user");
     }
 
-    await sendMail(user.email, userPayload.password);
+    await sendMailServices.sendAccountCreationEmail(user.email, userPayload.password);
 
     return user;
   }
@@ -122,7 +125,13 @@ class UserService {
     if (!userId) {
       throw new Error("User ID is required");
     }
-    const verificationToken = await authenticationServices.sendOTP(userId);
+    const user = await usersRepository.findUserById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const token = generateFourDigitOTP();
+    const otpMail = await sendMailServices.sendForgotPasswordOTP(user.email, token);
+    const verificationToken = await authenticationServices.sendOTP(userId, token);
     return verificationToken;
   }
 }
