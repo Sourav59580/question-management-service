@@ -7,7 +7,7 @@ class AuthenticationController {
       if (!user) {
         return res.status(400).json("Invalid user data");
       }
-      res.status(200).json(user);
+      res.status(302).json(user);
     } catch (error) {
       console.error("Error in user controller", error);
       res.status(500).json({ error: error.message });
